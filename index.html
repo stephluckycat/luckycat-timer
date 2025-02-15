@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Timer</title>
+<style>
+.prog-width {
+  width: 6px;
+}
+.prog-height {
+  height: 12px;
+}
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tick {
+  background-color: black;
+}
+.vert {
+  width: 1px;
+}
+.horz {
+  height: 1px;
+}
+</style>
+</head>
+<body>
+  <div style="display:flex; justify-content:center;">
+  <div style="display:flex; flex-direction:column; gap:12px; width:300px">
+    <img src="" style="width:100%"/>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div id="progress" class="prog-height" style="align-self:stretch; display:flex; justify-content:space-between; align-items: center;"></div>
+      <div id="time"></div>
+    </div>
+    <div style="display:flex; justify-content: space-between; gap:5px">
+      <button id="start" style="padding: 16px 24px; border: none; font-size: 20px;">START</button>
+      <button id="reset" style="padding: 16px 24px; border: none; font-size: 20px;">RESET</button>
+    </div>
+    <div id="direction" style="text-align:center;">Press START to begin</div>
+    <div id="details"></div>
+  </div>
+  </div>
+  <script>
+    var time = 0;
+    var seconds = 0; 
+    var minutes = 0;
+    var timerInterval;
+
+    var timeDisplay = document.getElementById('time');
+    var startButton = document.getElementById('start');
+    var resetButton = document.getElementById('reset');
+    var directionDisplay = document.getElementById('direction');
+    var detailsDisplay = document.getElementById('details');
+    var progressDisplay = document.getElementById('progress');
+    
+    const directions = {0:"Begin by pouring 100g", 30:"Next, pour to 200g", 60:"Continue pouring to 300g", 90:"Pour to 400g", 120:"Finally, pour to 500g", 150:"Let it drip", 180: "Enjoy your coffee!"};
+    const details = {0:"<p>Gradually pour 100g of just boiled water into grounds in a circular motion so that all coffee is wet.</p><p>Grounds will bubble, releasing carbon dioxide. This stage is called the “bloom”.", 30:"<p>Gradually pour another 100g in a circular motion so that the scale reads 200g total.</p><p>Now that the coffee has released its gas, we can better extract its flavor.</p>", 60: "<p>Pour another 100g in a circular motion so that the scale reads 300g total.</p><p>As water makes contact with the coffee, it extracts acids, lipids, sugars, etc contributing to its final flavor.</p>", 90: "<p>Continue to pour another 100g in a circular motion so that the scale reads 400g total.</p><p>The level of extraction affects the flavor of the brew. Too little results in a sour cup, too much in a bitter one.</p>", 120: "<p>Finish your brew by pouring another 100g for a final total of 500g of water.</p><p>The ratio of ground coffee to water will affect extraction and strength of the brew. We are using a ratio of 1:16.67.</p>", 150: "<p>It may take some time for all the water to drip through your dripper.  Once it finishes, remove the dripper and dispose of grounds.</p><p>Take note of your extraction time. We recommend aiming for between 2:30-3:30.</p>", 180: "<p>Take some time to take in the aroma and flavors of the brew. What do you taste?</p><p>We hope you enjoyed this pour over walkthrough! Let us know your feedback.</p>"}
+    const displayInterval = 30;
+    function updateProgress(count) {
+      const prog = "<div class=\"progress prog-width prog-height\"><div class=\"tick vert prog-height\"></div></div>".repeat(count);
+      const unprog = "<div class=\"progress prog-width prog-height\"><div class=\"tick horz prog-width\"></div></div>".repeat(displayInterval-count-1);
+      progressDisplay.innerHTML = prog+unprog;
+    }
+
+    function updateDirection() {
+      if (directions.hasOwnProperty(time)) {
+        const nextDirection = directions[time];
+        directionDisplay.textContent = nextDirection;
+      }
+    }
+    function updateDetails() {
+      if (details.hasOwnProperty(time)) {
+        const nextDetail = details[time];
+        detailsDisplay.innerHTML = nextDetail;
+      }
+    }
+
+    function updateTime(){ 
+      seconds++;
+      time++;
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+      }
+      updateDisplay(false);
+    }
+
+    function updateDisplay(isInit) {
+
+      const formattedSeconds = String(seconds).padStart(2, '0');
+      const formattedMinutes = String(minutes).padStart(2, '0');
+
+      timeDisplay.textContent = `${formattedMinutes}:${formattedSeconds}`;
+      if (time <=180){
+        updateDirection();
+        if (isInit){
+        detailsDisplay.textContent = "";
+        directionDisplay.textContent = "Press START to begin"
+        } else {
+          updateDetails();
+        }
+        updateProgress(time % 30);
+      }
+    }
+
+    startButton.addEventListener('click', () => {
+      if (startButton.textContent=='START') {
+
+        if (time == 0){
+          directionDisplay.textContent = directions[0];
+          detailsDisplay.innerHTML = details[0];
+        } else {
+          const directionKey = Math.floor(time / displayInterval) * displayInterval;
+          var lastDirection;
+          var lastDetails;
+          if (directions.hasOwnProperty(directionKey)){
+            lastDirection = directions[directionKey];
+            lastDetails = details[directionKey];
+          } else {
+            lastDirection = directions[180];
+            lastDetails = details[180]
+          }
+
+          directionDisplay.textContent = lastDirection;
+          detailsDisplay.innerHTML = lastDetails;
+          
+        }
+        timerInterval = setInterval(updateTime, 1000);
+        startButton.textContent = 'PAUSE'
+      } else {
+        clearInterval(timerInterval);
+        directionDisplay.textContent = "PAUSED";
+        startButton.textContent = 'START';
+      }
+      
+    });
+
+    resetButton.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      seconds = 0;
+      minutes = 0;
+      time = 0;
+      detailsDisplay.textContent = "";  
+      updateDisplay(true);
+      // timeDisplay.textContent = '00:00';
+      startButton.textContent = 'START';
+      // directionDisplay.textContent = "Click 'Start' to begin";
+    
+      // progressDisplay.textContent = "-----------------------------";
+    });
+
+    updateDisplay(true);
+  </script>
+</body>
+</html>
