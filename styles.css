@@ -28,3 +28,11 @@
   font-family: diatype;
   src: url(fonts/ABCDiatypeMono-Light.otf);
 }
+button#start, button#reset {
+  padding: 16px 24px;
+  border: none;
+  font-size: 20px;
+  font-family: diatype;
+  background-color: #0D0F0B;
+  color: #FFF8EF;
+}
