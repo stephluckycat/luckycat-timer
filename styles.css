@@ -1,0 +1,30 @@
+.prog-width {
+  width: 6px;
+}
+.prog-height {
+  height: 12px;
+}
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tick {
+  background-color: black;
+}
+.vert {
+  width: 1px;
+}
+.horz {
+  height: 1px;
+}
+
+@font-face {
+  font-family: synt;
+  src: url(fonts/ABCSynt-Regular.otf);
+}
+
+@font-face {
+  font-family: diatype;
+  src: url(fonts/ABCDiatypeMono-Light.otf);
+}
