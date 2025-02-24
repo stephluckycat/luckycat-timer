@@ -18,6 +18,9 @@
 .horz {
   height: 1px;
 }
+div {
+  color:#0D0F0B;
+}
 
 @font-face {
   font-family: synt;
@@ -29,7 +32,9 @@
   src: url(fonts/ABCDiatypeMono-Light.otf);
 }
 button#start, button#reset {
-  padding: 12px 40px;
+  /*padding: 12px 45px;*/
+  width: 140px;
+  height: 50px;
   border: none;
   font-size: 18px;
   font-family: diatype;
